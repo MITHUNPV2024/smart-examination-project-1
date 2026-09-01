@@ -1,0 +1,6 @@
+
+# Large files
+*.zip
+postgresql.zip
+node_modules/
+.env
