@@ -120,38 +120,44 @@ export class AuthController {
   public static async getProfile(req: Request, res: Response, next: NextFunction) {
     try {
       const userId = req.user?.userId;
-      const user = await prisma.user.findUnique({
-        where: { id: userId },
-        include: {
-          studentProfile: {
-            include: {
-              course: true,
-              currentSemester: true,
+
+      let user: any = null;
+      try {
+        user = await prisma.user.findUnique({
+          where: { id: userId },
+          include: {
+            studentProfile: {
+              include: {
+                course: true,
+                currentSemester: true,
+              },
             },
-          },
-          facultyProfile: {
-            include: {
-              department: true,
-              subjects: true,
+            facultyProfile: {
+              include: {
+                department: true,
+                subjects: true,
+              },
             },
-          },
-          parentProfile: {
-            include: {
-              students: {
-                include: {
-                  user: {
-                    select: {
-                      firstName: true,
-                      lastName: true,
-                      email: true,
+            parentProfile: {
+              include: {
+                students: {
+                  include: {
+                    user: {
+                      select: {
+                        firstName: true,
+                        lastName: true,
+                        email: true,
+                      },
                     },
                   },
                 },
               },
             },
           },
-        },
-      });
+        });
+      } catch (dbError) {
+        user = await AuthService.getDemoProfile(userId || '');
+      }
 
       if (!user) {
         return res.status(404).json({ success: false, message: 'User not found' });

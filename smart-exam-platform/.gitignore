@@ -39,6 +39,14 @@ prisma/*.db-journal
 # PostgreSQL binaries
 server/pg_bin/
 pg_bin/
+**/pg_bin/
+
+# Large binary files
+*.zip
+*.exe
+*.dll
+*.pdb
+*.msi
 
 # Misc
 .cache/
