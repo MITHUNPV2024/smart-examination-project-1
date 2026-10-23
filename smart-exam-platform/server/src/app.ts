@@ -16,9 +16,18 @@ const PORT = process.env.PORT || 5000;
 
 // Security Middlewares
 app.use(helmet());
+const rawCors = process.env.CORS_ORIGIN || 'http://localhost:5173';
+const allowedOrigins = rawCors.split(',').map((o) => o.trim());
+
 app.use(
   cors({
-    origin: process.env.CORS_ORIGIN || 'http://localhost:5173',
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes('*') || allowedOrigins.includes(origin) || origin.endsWith('.vercel.app')) {
+        callback(null, true);
+      } else {
+        callback(null, true);
+      }
+    },
     credentials: true,
   })
 );
